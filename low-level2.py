@@ -5,7 +5,7 @@
 # [2015-09-24]
 # 1. + Всё работает
 
-import gc, pygtk, gtk, gtk.gdkgl#, glfw
+import gc, pygtk, gtk, gtk.gdkgl
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -13,11 +13,12 @@ from OpenGL.GLU import *
 
 
 def on_quit (*args):
+	print "on_quit()", args
 	pass
 
 
 def on_realize (*args):
-	#print "on_realize()", args
+	print "on_realize()", args
 	drawing_area = args[0]
 	# Add OpenGL API support to self.window
 	gtk.gdkgl.ext(drawing_area.window)
@@ -35,9 +36,6 @@ def on_realize (*args):
 
 	glEnable(GL_MULTISAMPLE)
 
-
-	#glfwWindowHint (GLFW_SAMPLES, 4)
-
 	light_diffuse = (1.0, 0.0, 0.0, 1.0)
 	light_position = (1.0, 1.0, 1.0, 0.0)
 	qobj = gluNewQuadric()
@@ -50,11 +48,9 @@ def on_realize (*args):
 	glNewList(2, GL_COMPILE)
 	glEndList()
 
-
 	glNewList (3, GL_COMPILE)
 	glCallList (1)
 	glEndList ()
-
 
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse)
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position)
@@ -77,14 +73,14 @@ def on_realize (*args):
 	drawing_area.gldrawable.gl_end()
 
 def on_size_allocate (*args):
-	#print "on_size_allocate()", args
+	print "on_size_allocate()", args
 	drawing_area = args[0]
 	if drawing_area.gldrawable:
 		drawing_area.gldrawable.wait_gdk()
 
 
 def on_configure_event (*args):
-	#print "on_configure_event()", args
+	print "on_configure_event()", args
 	drawing_area = args[0]
 	# GtkDrawingArea sends a configure event when it's being realized. So
 	# we'll wait till it's been fully realized.
@@ -97,7 +93,7 @@ def on_configure_event (*args):
 	return False
 
 def on_expose_event (*args):
-	#print "on_expose_event()", args
+	print "on_expose_event()", args
 	drawing_area = args[0]
 	if drawing_area.gldrawable is None:
 		return False
@@ -113,7 +109,7 @@ def on_expose_event (*args):
 	return False
 
 def on_unrealize (*args):
-	#print "on_unrealize()", args
+	print "on_unrealize()", args
 	drawing_area = args[0]
 	# Remove OpenGL-capability
 	drawing_area.window.unset_gl_capability()
@@ -124,7 +120,7 @@ def on_unrealize (*args):
 
 frame = 0
 def on_timer_tick (*args):
-	#print "on_timer_tick ()", args
+	print "on_timer_tick ()", args
 	global frame
 	drawing_area = args[0]
 	if drawing_area.window is None:
@@ -160,7 +156,6 @@ drawing_area.gldrawable = None
 drawing_area.glcontext = None
 
 
-
 drawing_area.connect_after ('realize', on_realize)
 drawing_area.connect ('size_allocate', on_size_allocate)
 drawing_area.connect ('configure_event', on_configure_event)
@@ -174,7 +169,7 @@ button1 = gtk.Button ('Quit')
 button1.connect ('clicked', gtk.main_quit)
 vbox.pack_start(button1, expand = False)
 
-gtk.timeout_add (10, on_timer_tick, drawing_area)
+gtk.timeout_add (1300, on_timer_tick, drawing_area)
 
 gtk_window.show_all()
 gtk.main()
